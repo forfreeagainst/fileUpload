@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>大文件上传</title>
+  <link rel="stylesheet" href="css/reset.min.css">
+  <link rel="stylesheet" href="css/index.css">
+</head>
+<body>
+  <div class="container">
+    <div class="cell-box">
+      <h2>单一文件上传【Form-Data】</h2>
+      <div class="upload-area"></div>
+    </div>
+    <div class="cell-box">
+      <h2>单一文件上传【BASE64】，只适合图片</h2>
+      <div class="upload-area"></div>
+    </div>
+    <div class="cell-box">
+      <h2>单一文件上传【缩略图处理】</h2>
+      <div class="upload-area"></div>
+    </div>
+    <div class="cell-box">
+      <h2>单一文件上传【进度管控】</h2>
+      <div class="upload-area"></div>
+    </div>
+    <div class="cell-box">
+      <h2>多文件上传</h2>
+      <div class="upload-area"></div>
+    </div>
+    <div class="cell-box">
+      <h2>拖拽上传</h2>
+      <div class="upload-area"></div>
+    </div>
+    <div class="cell-box">
+      <h2>大文件上传</h2>
+      <div class="upload-area"></div>
+    </div>
+  </div>
+  <script src="node_modules/axios/dist/axios.min.js"></script>
+  <script src="node_modules/qs/dist/qs.js"></script>
+  <script src="node_modules/spark-md5/spark-md5.min.js"></script>
+  <script src="./js/utils.js"></script>
+  <script src="./js/instance.js"></script>
+  <script src="./js/upload.js"></script>
+</body>
+</html>

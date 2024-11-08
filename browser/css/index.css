@@ -1,0 +1,15 @@
+.container {
+  width: 1200px;
+  margin: 30px auto;
+  display: grid;
+  grid-template-columns: auto auto auto;
+  grid-gap: 50px;
+}
+.cell-box{
+
+}
+.upload-area{
+  border:solid 1px gray;
+  padding: 10px;
+  height: 100px;
+}
