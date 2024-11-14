@@ -2,14 +2,67 @@
   width: 1200px;
   margin: 30px auto;
   display: grid;
-  grid-template-columns: auto auto auto;
+  grid-template-columns: repeat(3, 1fr);
   grid-gap: 50px;
-}
-.cell-box{
-
 }
 .upload-area{
   border:solid 1px gray;
   padding: 10px;
   height: 100px;
+}
+
+button {
+  padding: 6px 8px;
+  border-radius: 6px;
+  border: none;
+}
+
+.v-show-false{
+  display:none;
+}
+
+.btn-select{
+  background: skyblue;
+  color: white;
+  margin-right: 10px;
+}
+
+.btn-upload{
+  background-color: seagreen;
+  color: white;
+}
+
+.tips-box{
+  margin-top: 10px;
+}
+
+.eg-one-remove, .remove-action{
+  margin-left: 8px;
+  color: red;
+}
+
+/*限制缩略图的大小*/
+.abbr-img{
+  /* width: 50px;
+  height: 50px; */
+  width: 40px;
+}
+
+
+/*进度管控*/
+.upload-progress{
+  display: none;
+  position: relative;
+  height: 6px;
+  background: #EEE;
+}
+.upload-value{
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 999;
+  height: 100%;
+  width: 0%;
+  background: #67c23a;
+  transition: width .3s;
 }

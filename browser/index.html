@@ -11,23 +11,63 @@
   <div class="container">
     <div class="cell-box">
       <h2>单一文件上传【Form-Data】</h2>
-      <div class="upload-area"></div>
+      <div class="upload-area">
+        <!--accept="image/png, image/jpeg"-->
+        <!--multiple是否支持多选-->
+        <input type="file" class="eg-one-file v-show-false">
+        <div class="btn-group">
+          <button class="eg-one-select btn-select">选择文件</button>
+          <button class="eg-one-upload btn-upload">上传到服务器</button>
+        </div>
+        <div class="eg-one-tips tips-box">
+          只能上传PNG/JPG/JPEG格式图片，且大小不能超过2MB
+        </div>
+        <ul class="eg-one-files"></ul>
+      </div>
     </div>
     <div class="cell-box">
-      <h2>单一文件上传【BASE64】，只适合图片</h2>
-      <div class="upload-area"></div>
+      <h2>单一文件上传【BASE64】，只适合图片！！！</h2>
+      <div class="upload-area">
+        <input type="file" accept=".png,.jpeg" class="eg-two-file v-show-false">
+        <button class="eg-two-upload btn-upload">上传图片</button>
+      </div>
     </div>
     <div class="cell-box">
       <h2>单一文件上传【缩略图处理】</h2>
-      <div class="upload-area"></div>
+      <div class="upload-area eg-three">
+        <input type="file" class="input-file v-show-false">
+        <div class="btn-group">
+          <button class="btn-select">选择文件</button>
+          <button class="btn-upload">上传到服务器</button>
+        </div>
+        <div class="list-abbr">
+          <img src="" alt="" class="abbr-img">
+        </div>
+      </div>
     </div>
     <div class="cell-box">
       <h2>单一文件上传【进度管控】</h2>
-      <div class="upload-area"></div>
+      <div class="upload-area eg-four">
+        <div>
+          <input type="file" class="input-file v-show-false">
+          <button class="btn-upload">上传到服务器</button>
+        </div>
+        <div class="upload-progress">
+          <div class="upload-value"></div>
+        </div>
+      </div>
     </div>
     <div class="cell-box">
       <h2>多文件上传</h2>
-      <div class="upload-area"></div>
+      <div class="upload-area eg-five">
+        <input type="file" class="input-file v-show-false" multiple>
+        <div class="btn-group">
+          <button class="btn-select">选择文件</button>
+          <button class="btn-upload">上传到服务器</button>
+        </div>
+        <ul class="file-ul">
+        </ul>
+      </div>
     </div>
     <div class="cell-box">
       <h2>拖拽上传</h2>

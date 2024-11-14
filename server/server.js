@@ -37,7 +37,7 @@ app.use(bodyParser.urlencoded({
 }));
 
 // 延迟函数
-const delay = function delay(interval) {
+const delay = function (interval) {
     typeof interval !== "number" ? interval = 1000 : null;
     return new Promise(resolve => {
         setTimeout(() => {
@@ -47,7 +47,7 @@ const delay = function delay(interval) {
 };
 
 // 检测文件是否存在
-const exists = function exists(path) {
+const exists = function (path) {
     return new Promise(resolve => {
         fs.access(path, fs.constants.F_OK, err => {
             if (err) {
@@ -59,9 +59,150 @@ const exists = function exists(path) {
     });
 };
 
+//__dirname获取当前文件所在的路径，D:\github-repo\file-upload\server
+const uploadDir = `${__dirname}/upload`;
+// req是请求参数
+const multiparty_upload = function (req, isConfigUploadDir = false) {
+    const options = {
+        maxFieldsSize: 200 * 1024 * 1024//200MB
+    }
+    if (!!isConfigUploadDir) {
+        options.uploadDir = uploadDir;
+    }
+    return new Promise((resolve, reject) => {
+        var form = new multiparty.Form(options);
+        form.parse(req, function (err, fields, files) {
+            if (err) return reject(err);
+            // console.log(fields, 'fields');//{filename: ['asdfa.jpng']}
+            // console.log(files, 'files');//{file: [{文件1}, {文件2}]}
+            resolve({
+                fields,
+                files
+            });
+        }) 
+    })
+}
 
+// 创建文件并写入到指定的目录 & 返回客户端结果
+const writeFile = function (res, path, file, filename, stream) {
+    //file是buffer,
+    return new Promise((resolve, reject) => {
+        if (stream) {
+            try {
+                let readStream = fs.createReadStream(file.path),
+                    writeStream = fs.createWriteStream(path);
+                readStream.pipe(writeStream);
+                readStream.on('end', () => {
+                    resolve();
+                    fs.unlinkSync(file.path);
+                    res.send({
+                        code: 0,
+                        codeText: 'upload success',
+                        originalFilename: filename,
+                        servicePath: path.replace(__dirname, HOSTNAME)
+                    });
+                });
+            } catch (err) {
+                reject(err);
+                res.send({
+                    code: 1,
+                    codeText: err
+                });
+            }
+            return;
+        }
+        fs.writeFile(path, file, err => {
+            if (err) {
+                reject(err);
+                res.send({
+                    code: 1,
+                    codeText: err
+                });
+                return;
+            }
+            resolve();
+            res.send({
+                code: 0,
+                codeText: 'upload success',
+                originalFilename: filename,
+                servicePath: path.replace(__dirname, HOSTNAME)
+            });
+        });
+    });
+}
 
+// 单文件上传处理「FORM-DATA」
+app.post('/upload_single', async (req, res) => {
+    try {
+        let {files} = await multiparty_upload(req, true);
+        let file = (files.file && files.file[0]) || {};
+        res.send({
+            code: 0,
+            codeText: 'upload success',
+            originalFilename: file.originalFilename,
+            servicePath: file.path.replace(__dirname, HOSTNAME)
+        });
+    } catch (err) {
+        res.send({
+            code: 1,
+            codeText: err
+        });
+    }
+});
 
+//单文件上传处理「BASE64」
+app.post('/upload_single_base64', async (req, res) => {
+    //文件名不一样，但文件内容一样，是不会重复上传的哦
+    let { file, filename } = req.body;
+    let spark = new SparkMD5.ArrayBuffer();
+    file = decodeURIComponent(file);//客户端encodeURLComponent，这里要解码
+    // console.log(file, 'file');
+    file = file.replace(/^data:image\/\w+;base64,/, "");
+    //Buffer.from这里没有传入第二个参数base64，官网没找到
+    file = Buffer.from(file);//不影响spark.end的结果，这是要干啥,file为Buffer
+    spark.append(file);
+    const suffix = filename.split('.').slice(-1);
+    const uploadPath = `${uploadDir}/${spark.end()}.${suffix}`;
+    const isExists = await exists(uploadPath);
+    await delay();
+    if (isExists) {
+        res.send({
+            code: 0,
+            codeText: 'file is exists',
+            originalFilename: filename,
+            servicePath: uploadPath.replace(__dirname, HOSTNAME)
+        });
+        return;
+    }
+    writeFile(res, uploadPath, file, filename, false);
+})
+
+//场景一：客户端用hash作为文件名，单一图片文件上传
+app.post('/upload_single_name', async (req, res) => {
+    try {
+        let { fields, files } = await multiparty_upload(req);
+        let file = (files.file && files.file[0]) || {};
+        let filename = (fields.filename && fields.filename[0]) || "";
+        let path = `${uploadDir}/${filename}`;
+        // 检测是否存在
+        const isExists = await exists(path);
+        if (isExists) {
+            res.send({
+                code: 0,
+                codeText: 'file is exists',
+                originalFilename: filename,
+                servicePath: path.replace(__dirname, HOSTNAME)
+            });
+            return;
+        }
+        writeFile(res, path, file, filename, true);
+    } catch (err) {
+        res.send({
+            code: 1,
+            codeText: err
+        });
+    }
+});
 
 
 
